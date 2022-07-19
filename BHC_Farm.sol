@@ -12,6 +12,8 @@ Written by The Great Engineers @ 21C
 dev@bitcoinhodl.club
 flattened 19/07/22
 */
+
+
 // File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.7.0
 
 // SPDX-License-Identifier: MIT
@@ -155,17 +157,6 @@ abstract contract ReentrancyGuard {
         _status = _NOT_ENTERED;
     }
 }
-
-/**
- * @dev Provides information about the current execution context, including the
- * sender of the transaction and its data. While these are generally available
- * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with meta-transactions the account sending and
- * paying for execution may not be the actual sender (as far as an application
- * is concerned).
- *
- * This contract is only required for intermediate, library-like contracts.
- */
 abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
@@ -175,7 +166,6 @@ abstract contract Context {
         return msg.data;
     }
 }
-
 /**
  * @dev Contract module which provides a basic access control mechanism, where
  * there is an account (an owner) that can be granted exclusive access to
@@ -252,15 +242,15 @@ abstract contract Ownable is Context {
         emit OwnershipTransferred(oldOwner, newOwner);
     }
 }
-
 interface IAlpaca{
     function deposit(uint256 bnb) external payable;
     function withdraw(uint256 share) external;
 }
-
 interface IBHC_Rewards {
     function DepositBNB() external payable;
 }
+
+// File contracts/SolStake/sETH.sol
 /*
   _________      .__    _________ __          __           
  /   _____/ ____ |  |  /   _____//  |______  |  | __ ____  
@@ -276,7 +266,6 @@ Yielding & Farming must be implemented seperatly
 Repo & Implementation Example can be found here: https://github.com/Kwame0/SolStake
 
 */
-pragma solidity ^0.8.0;
 contract SolStakeEth is ReentrancyGuard, Ownable {
 
     uint256 public UNSTAKEABLE_FEE = 9200; // How much can they Unstake? 92% AKA 8% Staking FEE
@@ -313,7 +302,6 @@ contract SolStakeEth is ReentrancyGuard, Ownable {
     address[] public stakerList;
 
     constructor() ReentrancyGuard() {
-      //IERC20(alBNB).approve(alBNB, MAX_UINT);
       IERC20(WBNB).approve(PCS_ROUTER_V2, MAX_UINT);
     }
 
@@ -472,9 +460,6 @@ contract SolStakeEth is ReentrancyGuard, Ownable {
 
 
 }
-
-
-// File contracts/BHC_Farm.sol
 contract BHC_Farm is ReentrancyGuard, Ownable, SolStakeEth {
 
     string public name = "BitcoinHODLClub Token Farm";
@@ -563,6 +548,17 @@ contract BHC_Farm is ReentrancyGuard, Ownable, SolStakeEth {
 
     function SetEmissionRate(uint256 e) external onlyOwner {
         EMISSION_RATE = e;
+    }
+
+    function RescueBHC() external onlyOwner {
+        uint256 bal = IERC20(BHC_ADDRESS).balanceOf(address(this));
+        IERC20(BHC_ADDRESS).transfer(owner(), bal);
+    }
+
+    function RescueiBNB() external onlyOwner {
+        IAlpaca(alBNB).withdraw(IERC20(alBNB).balanceOf(address(this)));
+        uint256 bal = IERC20(WBNB).balanceOf(address(this));
+        IERC20(WBNB).transfer(owner(), bal);
     }
 
     // For future updates BNB/BTC rewards will be sent to the new contract
