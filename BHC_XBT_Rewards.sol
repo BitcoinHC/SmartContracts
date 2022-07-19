@@ -301,12 +301,6 @@ contract BHC_Presale is Ownable, ReentrancyGuard {
         IERC20(BUSD).transfer(owner(), bal);
     }
 }
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.7.0
-
-// SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
-
-pragma solidity ^0.8.0;
 
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.
