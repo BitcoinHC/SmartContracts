@@ -257,7 +257,6 @@ abstract contract Ownable is Context {
 contract BHC_Presale is Ownable, ReentrancyGuard {
     bool public active = false;
 
-    address constant private WBNB = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
     address constant private BUSD = 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56;
     address constant public BHC = 0x5AC9E12edA36ef773A98a4102DD95c43a1F7e500;
 
