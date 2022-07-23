@@ -230,7 +230,9 @@ contract BHC_Lock is Ownable {
             }else{
                 IERC20(BHC).transfer(owner(), bal);
             }
-            contractLocked = false;
+            if(block.timestamp >= (lockTime + (NextMonth * 20))){
+                contractLocked = false;
+            }
         }else{
             revert("You have to wait until the next BHC release time!");
         }
